@@ -13,6 +13,7 @@ const _ = require("lodash");
 const Role = require("../models/roleModel");
 const sendSMS = require("../utils/sendSms");
 const passport = require("passport");
+const { logoutService } = require("../service/authService");
 
 //create user activation token
 const createActivationToken = (user) => {
@@ -450,9 +451,9 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 const logout = asyncHandler(async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
-    if (!refreshToken) { return res.status(401).json({status: "FAILED", message: "No refresh token found in cookies." })}
+    const user = await logoutService(refreshToken);
+    console.log(user,"userdata")
 
-    const user = await User.findOneAndUpdate({ refreshToken }, { refreshToken: null },{ new: true }).select("+refreshToken");
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV ==="production", 

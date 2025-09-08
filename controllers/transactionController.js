@@ -92,8 +92,7 @@ const listAllTransactions =  expressAsyncHandler( async (req,res,next)=>{
             totalPages, 
             currentPage:page,
             limit
-        })
-        
+        }) 
     } catch (error) {
         // logger.error(error.message);
         next(error)

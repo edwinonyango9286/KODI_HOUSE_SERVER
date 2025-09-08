@@ -1,7 +1,8 @@
 const expressAsyncHandler = require("express-async-handler");
 const Receipt = require("../models/ReceiptModel");
 const { createReceiptSchema } = require("../validationSchemas/receipts");
-const User = require("../models/userModel")
+const User = require("../models/userModel");
+const { generateReceiptService } = require("../service/receiptService");
 
 
 const generateReceipt = expressAsyncHandler(async(req, res)=>{
@@ -9,8 +10,8 @@ const generateReceipt = expressAsyncHandler(async(req, res)=>{
     if(error){
         return res.status(400).json({ status:"FAILED", message:error.details[0].message});
     }
-   const createdReceipt =  await Receipt.create({...value, createdBy:req.user.id});
-   return res.status(200).json({ status:"SUCCESS", message:"Receipt created successfully",data:createdReceipt})
+   const generatedReceipt =  await generateReceiptService({ ...value, createdBy:req.user._id});
+   return res.status(200).json({ status:"SUCCESS", message:"Receipt generated successfully",data:generatedReceipt})
 });
 
 
