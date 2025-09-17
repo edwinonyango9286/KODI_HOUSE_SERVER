@@ -7,12 +7,14 @@ const validatePhoneNumber = require("../utils/validatePhoneNumber");
 const emailValidator = require("email-validator");
 const { generateUserPassword } = require("../utils/generateUserPassword");
 const sendMail = require("../utils/sendMails");
+const Role = require("../models/roleModel");
 
 
 
 const createATenant = expressAsyncHandler(async(req,res,next)=>{
   try {
     const {firstName,secondName,email,phoneNumber}  = req.body
+    console.log(req.body,"tenant data")
     if(!firstName || !secondName || !email || !phoneNumber){
       return res.status(400).json({ status:'FAILED', message:"Please provide all the required fields."})
     }
@@ -21,6 +23,11 @@ const createATenant = expressAsyncHandler(async(req,res,next)=>{
     if(existingTenant){
       return res.status(409).json({ status:"FAILED", message:`Tenant with email ${existingTenant.email} already exist.` })
     }
+  
+    const tenantRole = await Role.findOne({ name:"Tenant"});
+    console.log(tenantRole,"tenantrolehere........")
+
+  
 
      const userPassword = generateUserPassword();
     
