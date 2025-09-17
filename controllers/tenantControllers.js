@@ -8,37 +8,17 @@ const emailValidator = require("email-validator");
 const { generateUserPassword } = require("../utils/generateUserPassword");
 const sendMail = require("../utils/sendMails");
 const Role = require("../models/roleModel");
-
-
+const { createTenantSchema } = require("../validationSchemas/tenantValidationSchema");
+const { createTenantService } = require("../service/tenantService");
 
 const createATenant = expressAsyncHandler(async(req,res,next)=>{
   try {
-    const {firstName,secondName,email,phoneNumber}  = req.body
-    console.log(req.body,"tenant data")
-    if(!firstName || !secondName || !email || !phoneNumber){
-      return res.status(400).json({ status:'FAILED', message:"Please provide all the required fields."})
+    const {error, value } = createTenantSchema.validate(req.body);
+    if(error){
+      return res.status(400).json({ status:'FAILED', message:error.details[0].message})
     }
-
-    const existingTenant = await User.findOne({ email });
-    if(existingTenant){
-      return res.status(409).json({ status:"FAILED", message:`Tenant with email ${existingTenant.email} already exist.` })
-    }
-  
-    const tenantRole = await Role.findOne({ name:"Tenant"});
-    console.log(tenantRole,"tenantrolehere........")
-
-  
-
-     const userPassword = generateUserPassword();
-    
-    const createdTenant  = await User.create({ ...req.body, createdBy:req.user.id, password:userPassword, firstName:_.startCase(firstName), secondName:_.startCase(secondName) });
-    const data = { user:{ userName: `${firstName} ${secondName}`, email:createdTenant.email}, password:userPassword}
-    await sendMail({ email: createdTenant.email, subject: "Tenant account creation", template: "user-account-creation.ejs", data,});
-
-    if(createdTenant){
-      return res.status(201).json({ status:"SUCCESS", message:"Tenant created successfully. Tenant password has been sent to the registered email address.", data:createdTenant})
-    }
-
+    const createdTenant = await createTenantService(value,req.user._id)
+    return res.status(201).json({ status:"SUCCESS", message:"Tenant created successfully. Tenant password has been sent to the registered email address.", data:createdTenant})
   } catch (error) {
     logger.error(error)
     next(error)

@@ -95,3 +95,9 @@
 {"_message":"User validation failed","errors":{"role":{"kind":"ObjectId","message":"Cast to ObjectId failed for value \"\" (type string) at path \"role\" because of \"BSONError\"","name":"CastError","path":"role","reason":{},"stringValue":"\"\"","value":"","valueType":"string"}},"level":"error","message":"User validation failed: role: Cast to ObjectId failed for value \"\" (type string) at path \"role\" because of \"BSONError\"","name":"ValidationError","timestamp":"2025-09-12 17:40:03"}
 {"_message":"User validation failed","errors":{"role":{"kind":"ObjectId","message":"Cast to ObjectId failed for value \"\" (type string) at path \"role\" because of \"BSONError\"","name":"CastError","path":"role","reason":{},"stringValue":"\"\"","value":"","valueType":"string"}},"level":"error","message":"User validation failed: role: Cast to ObjectId failed for value \"\" (type string) at path \"role\" because of \"BSONError\"","name":"ValidationError","timestamp":"2025-09-12 17:42:13"}
 {"_message":"User validation failed","errors":{"role":{"kind":"ObjectId","message":"Cast to ObjectId failed for value \"\" (type string) at path \"role\" because of \"BSONError\"","name":"CastError","path":"role","reason":{},"stringValue":"\"\"","value":"","valueType":"string"}},"level":"error","message":"User validation failed: role: Cast to ObjectId failed for value \"\" (type string) at path \"role\" because of \"BSONError\"","name":"ValidationError","timestamp":"2025-09-12 17:46:01"}
+{"level":"error","timestamp":"2025-09-17 18:23:20"}
+{"level":"error","timestamp":"2025-09-17 18:24:23"}
+{"level":"error","timestamp":"2025-09-17 18:25:36"}
+{"level":"error","timestamp":"2025-09-17 18:26:09"}
+{"level":"error","timestamp":"2025-09-17 18:27:29"}
+{"level":"error","timestamp":"2025-09-17 18:27:39"}
