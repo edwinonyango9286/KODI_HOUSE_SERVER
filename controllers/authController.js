@@ -14,6 +14,7 @@ const Role = require("../models/roleModel");
 const sendSMS = require("../utils/sendSms");
 const passport = require("passport");
 const { logoutService } = require("../service/authService");
+const { signInSchema } = require("../validationSchemas/auth");
 
 //create user activation token
 const createActivationToken = (user) => {
@@ -111,12 +112,12 @@ const verifyLandlordAccount = asyncHandler(async (req, res) => {
 // General sign-in function
 const signInUser = asyncHandler(async (req, res, next, expectedRole) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) { return res.status(400).json({status: "FAILED", message: "Please provide all the required fields.",});}
-    if (!emailValidator.validate(email)) {return res.status(400).json({ status: "FAILED",message: "Please provide a valid email address.",});}
-    const user = await User.findOne({ email,isDeleted: false,deletedAt: null,}).select("+password").populate({ path: "role", select: "name" });
+    const {error,value} = signInSchema.validate(req.body);
+    if (error) { return res.status(400).json({status: "FAILED", message:error.details[0].message});}
+    if (!emailValidator.validate(value.email)) {return res.status(400).json({ status: "FAILED",message: "Please provide a valid email address.",});}
+    const user = await User.findOne({email:value.email,isDeleted: false,deletedAt: null,}).select("+password").populate({ path: "role", select: "name" });
     if (!user || user.role.name !== expectedRole) {return res.status(404).json({status: "FAILED",message: `${expectedRole} account not found.`});}
-    if (!(await user.isPasswordMatched(password))) {return res.status(401).json({status: "FAILED",message: "Wrong email or password."});}
+    if (!(await user.isPasswordMatched(value.password))) {return res.status(401).json({status: "FAILED",message: "Wrong email or password."});}
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
     user.refreshToken = refreshToken;
